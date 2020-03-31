@@ -1,0 +1,18 @@
+
+/* Class = "UITabBarItem"; title = "Receitas"; ObjectID = "9FF-hO-Y2T"; */
+"9FF-hO-Y2T.title" = "Receitas";
+
+/* Class = "UITabBarItem"; title = "Dicas"; ObjectID = "CLx-ru-guW"; */
+"CLx-ru-guW.title" = "Dicas";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Ezf-90-Dd5"; */
+"Ezf-90-Dd5.text" = "Label";
+
+/* Class = "UINavigationItem"; title = "Receitas"; ObjectID = "HjR-KB-Cre"; */
+"HjR-KB-Cre.title" = "Receitas";
+
+/* Class = "UINavigationItem"; title = "Dicas"; ObjectID = "VHx-dC-cHk"; */
+"VHx-dC-cHk.title" = "Dicas";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "uCO-KN-QIm"; */
+"uCO-KN-QIm.text" = "Label";
