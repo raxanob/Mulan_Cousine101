@@ -7,12 +7,7 @@
 //
 
 import UIKit
-enum CategoryOfRenevue: String {
-    case cooked = "Cooked"
-    case frying = "Frying"
-    case roast = "Roast"
-    case drink = "Drink"
-}
+import CloudKit
 
 class MenuTableViewController: UITableViewController {
 
@@ -24,6 +19,12 @@ class MenuTableViewController: UITableViewController {
     @IBOutlet weak var SegmentedControlOutlet: UISegmentedControl!
     
     override func viewDidLoad() {
+        
+        let container = CKContainer.init(identifier: "iCloud.Xuxu")
+//        var database = container.privateCloudDatabase
+//        let predicate = NSPredicate(format: "NomeDaReceita == %@", allrenevue ?? nil)
+//        let query = CKQuery(recordType: "Receita", predicate: NSPredicate)
+        
         super.viewDidLoad()
         navigationItem.hidesSearchBarWhenScrolling = false
         self.setNeedsStatusBarAppearanceUpdate()
@@ -174,15 +175,5 @@ class MenuTableViewController: UITableViewController {
                 navigator.pushViewController(viewController, animated: true)
             }
         }
-    }
-}
-
-// MARK: - Delegate of searchBar
-extension MenuTableViewController: UISearchBarDelegate {
-    func creatSearchBar() {
-        searchBar.delegate = self
-        searchBar.showsCancelButton = false
-        searchBar.placeholder = "Ingredientes"
-        self.navigationItem.titleView = searchBar
     }
 }
