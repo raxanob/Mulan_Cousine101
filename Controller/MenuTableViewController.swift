@@ -11,23 +11,26 @@ import CloudKit
 
 class MenuTableViewController: UITableViewController {
 
-    var allrenevue: [Receita] = []
-    var filterRenevue: [Receita] = []
+    var filterRenevue = [CKRecord]()
+    var recepie = [CKRecord]()
+
     let searchBar = UISearchBar()
     
-    var recepie = [CKRecord]()
+    let container = CKContainer.init(identifier: "iCloud.Xuxu")
+    let query = CKQuery(recordType: "Receitas", predicate: NSPredicate(value: true))
+    lazy var database = container.publicCloudDatabase
+        
     // MARK: - Table view data source
     @IBOutlet weak var SegmentedControlOutlet: UISegmentedControl!
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        queryDatabase()
         navigationItem.hidesSearchBarWhenScrolling = false
         self.setNeedsStatusBarAppearanceUpdate()
+        queryDatabase()
         creatSearchBar()
-        allrenevue = InternReceita.getAllRecepies()
-        filterRenevue = allrenevue
+        filterRenevue = recepie
 
         SegmentedControlOutlet.selectedSegmentIndex = 0
         SegmentedControlOutlet.backgroundColor = .clear
@@ -39,16 +42,14 @@ class MenuTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         navigationController?.navigationBar.barStyle = .default
     }
-    
+     
     func queryDatabase(){
-        let container = CKContainer.init(identifier: "iCloud.Xuxu")
-        let query = CKQuery(recordType: "Receitas", predicate: NSPredicate(value: true))
-        let database = container.publicCloudDatabase
+        
         database.perform(query, inZoneWith: nil) { (records, error) in
+            guard let records = records else { return }
             if let err = error {
                 fatalError(err.localizedDescription)
             } else {
-                guard let records = records else { return }
                 let sortedRecords = records.sorted(by: { $0.creationDate! > $1.creationDate!})
                 self.recepie = sortedRecords
                 DispatchQueue.main.async {
@@ -61,41 +62,51 @@ class MenuTableViewController: UITableViewController {
     // MARK: - Search Bar
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
-            filterRenevue = allrenevue
+            filterRenevue = recepie
             tableView.reloadData()
             return
         }
         
-        filterRenevue = allrenevue.filter({(renevue: Receita) -> Bool in
-            for ingredient in renevue.ingredientes {
-                if ingredient.lowercased().contains(searchText.lowercased()){
+        let predicate = NSPredicate(format: "NomeIngredientes == %@", searchText.lowercased())
+        let query = CKQuery(recordType: "Receitas", predicate: predicate)
+        database.perform(query, inZoneWith: nil) {(records, error) in
+        if let err = error {
+            fatalError(err.localizedDescription)
+        } else {
+            DispatchQueue.main.async {
+                self.filterRenevue = self.recepie.filter({(renevue: CKRecord) -> Bool in
+                    if (records?.contains(renevue))!{
                         return true
+                    } else {
+                        return false
                     }
+                    })
                 }
-                return false
-            })
-            tableView.reloadData()
+            }
+        }
+        tableView.reloadData()
     }
+
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         switch selectedScope {
         case 0:
-            filterRenevue = allrenevue
+            filterRenevue = recepie
         case 1:
-            filterRenevue = allrenevue.filter({(renevue: Receita) -> Bool in
-                renevue.categoria == CategoryOfRenevue.roast.rawValue
+            filterRenevue = recepie.filter({(renevue: CKRecord) -> Bool in
+                renevue.value(forKey: "Categoria") as? String == CategoryOfRenevue.roast.rawValue
             })
         case 2:
-            filterRenevue = allrenevue.filter({(renevue: Receita) -> Bool in
-                renevue.categoria == CategoryOfRenevue.cooked.rawValue
+            filterRenevue = recepie.filter({(renevue: CKRecord) -> Bool in
+                renevue.value(forKey: "Categoria") as? String == CategoryOfRenevue.cooked.rawValue
             })
         case 3:
-            filterRenevue = allrenevue.filter({(renevue: Receita) -> Bool in
-                renevue.categoria == CategoryOfRenevue.frying.rawValue
+            filterRenevue = recepie.filter({(renevue: CKRecord) -> Bool in
+                renevue.value(forKey: "Categoria") as? String == CategoryOfRenevue.frying.rawValue
             })
         case 4:
-            filterRenevue = allrenevue.filter({(renevue: Receita) -> Bool in
-                renevue.categoria == CategoryOfRenevue.drink.rawValue
+            filterRenevue = recepie.filter({(renevue: CKRecord) -> Bool in
+                renevue.value(forKey: "Categoria") as? String == CategoryOfRenevue.drink.rawValue
             })
         default:
             break
@@ -107,15 +118,15 @@ class MenuTableViewController: UITableViewController {
     @IBAction func SegmentedControlAction(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
-            filterRenevue = InternReceita.getAllRecepies()
+            filterRenevue = recepie
         case 1:
-            filterRenevue = MenuTableViewController.getRoastReceitas()
+            filterRenevue = getRoastReceitas()
         case 2:
-            filterRenevue = MenuTableViewController.getCookedReceitas()
+            filterRenevue = getCookedReceitas()
         case 3:
-            filterRenevue = MenuTableViewController.getFriedReceitas()
+            filterRenevue = getFriedReceitas()
         case 4:
-            filterRenevue = MenuTableViewController.getDrinkReceitas()
+            filterRenevue = getDrinkReceitas()
         default:
             break
         }
@@ -123,37 +134,37 @@ class MenuTableViewController: UITableViewController {
     }
     
     // MARK: - Functions of segmented
-    static func getCookedReceitas() -> [Receita] {
-        let all = InternReceita.getAllRecepies()
-        var cookedReceitas: [Receita] = []
-        for receita in all where receita.categoria == "Cooked" {
-            cookedReceitas.append(receita)
-        }
-        return cookedReceitas
-    }
-    
-    static func getFriedReceitas() -> [Receita] {
-        let all = InternReceita.getAllRecepies()
-        var friedReceitas: [Receita] = []
-        for receita in all where receita.categoria == "Frying" {
-            friedReceitas.append(receita)
-        }
-        return friedReceitas
-    }
-    
-    static func getRoastReceitas() -> [Receita] {
-        let all = InternReceita.getAllRecepies()
-        var roastReceitas: [Receita] = []
-        for receita in all where receita.categoria == "Roast" {
+    func getRoastReceitas() -> [CKRecord] {
+        let all = recepie
+        var roastReceitas: [CKRecord] = []
+        for receita in all where receita.value(forKey: "Categoria") as? String == "Assados" {
             roastReceitas.append(receita)
         }
         return roastReceitas
     }
     
-    static func getDrinkReceitas() -> [Receita] {
-        let all = InternReceita.getAllRecepies()
-        var drinkReceitas: [Receita] = []
-        for receita in all where receita.categoria == "Drink" {
+    func getCookedReceitas() -> [CKRecord] {
+        let all = recepie
+        var cookedReceitas: [CKRecord] = []
+        for receita in all where receita.value(forKey: "Categoria") as? String == "Cozidos" {
+            cookedReceitas.append(receita)
+        }
+        return cookedReceitas
+    }
+    
+    func getFriedReceitas() -> [CKRecord] {
+        let all = recepie
+        var friedReceitas: [CKRecord] = []
+        for receita in all where receita.value(forKey: "Categoria") as? String == "Fritos" {
+            friedReceitas.append(receita)
+        }
+        return friedReceitas
+    }
+    
+    func getDrinkReceitas() -> [CKRecord] {
+        let all = recepie
+        var drinkReceitas: [CKRecord] = []
+        for receita in all where receita.value(forKey: "Categoria") as? String == "Bebidas" {
             drinkReceitas.append(receita)
         }
         return drinkReceitas
@@ -165,16 +176,20 @@ class MenuTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         if let cell = tableView.dequeueReusableCell(withIdentifier: "IDMenuCell") as? CardsMenuTableViewCell {
-            
-            cell.imageRecipeCardMenu.image = UIImage(named: filterRenevue[indexPath.row].nomeDaImagemMenu)
-            cell.imageRecipeCardMenu.layer.cornerRadius = 15
-            
-            cell.labelNameRecipeCardMenu.text = recepie[indexPath.row].value(forKey: "NomeDaReceita") as? String
-//            cell.labelNameRecipeCardMenu.text = filterRenevue[indexPath.row].nomeDaReceita
-            cell.labelTimeRecipeCardMenu.text = filterRenevue[indexPath.row].tempoDePreparo
-            cell.labelPeopleRecipeCardMenu.text = filterRenevue[indexPath.row].quantasPessoasServe
+            for receita in filterRenevue {
+                let url = (receita["ImagemMenu"] as! CKAsset).fileURL
+                if let data = try? Data(contentsOf: url!), let image = UIImage(data: data) {
+                cell.imageRecipeCardMenu.image = image
+                cell.imageRecipeCardMenu.layer.cornerRadius = 15
+                
+                cell.labelNameRecipeCardMenu.text = filterRenevue[indexPath.row].value(forKey: "NomeDaReceita") as? String
+
+                cell.labelTimeRecipeCardMenu.text = filterRenevue[indexPath.row].value(forKey: "TempoDePreparo") as? String
+
+                cell.labelPeopleRecipeCardMenu.text = filterRenevue[indexPath.row].value(forKey: "QuantidadeDePessoasQueServe") as? String
+                }
+            }
             return cell
         }
         return UITableViewCell()
@@ -186,7 +201,7 @@ class MenuTableViewController: UITableViewController {
         
         if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "RecipePage") as? RecepieViewController {
             
-            viewController.renevue = recepie
+//            viewController.renevue = recepie
             
             if let navigator = navigationController {
                 navigator.pushViewController(viewController, animated: true)

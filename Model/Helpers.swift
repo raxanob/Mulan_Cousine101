@@ -9,8 +9,8 @@
 import UIKit
 
 enum CategoryOfRenevue: String {
-    case cooked = "Cooked"
-    case frying = "Frying"
-    case roast = "Roast"
-    case drink = "Drink"
+    case cooked = "Cozidos"
+    case frying = "Fritos"
+    case roast = "Assados"
+    case drink = "Bebidas"
 }
