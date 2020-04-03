@@ -15,17 +15,14 @@ class MenuTableViewController: UITableViewController {
     var filterRenevue: [Receita] = []
     let searchBar = UISearchBar()
     
+    var recepie = [CKRecord]()
     // MARK: - Table view data source
     @IBOutlet weak var SegmentedControlOutlet: UISegmentedControl!
     
     override func viewDidLoad() {
         
-        let container = CKContainer.init(identifier: "iCloud.Xuxu")
-//        var database = container.privateCloudDatabase
-//        let predicate = NSPredicate(format: "NomeDaReceita == %@", allrenevue ?? nil)
-//        let query = CKQuery(recordType: "Receita", predicate: NSPredicate)
-        
         super.viewDidLoad()
+        queryDatabase()
         navigationItem.hidesSearchBarWhenScrolling = false
         self.setNeedsStatusBarAppearanceUpdate()
         creatSearchBar()
@@ -41,6 +38,24 @@ class MenuTableViewController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         navigationController?.navigationBar.barStyle = .default
+    }
+    
+    func queryDatabase(){
+        let container = CKContainer.init(identifier: "iCloud.Xuxu")
+        let query = CKQuery(recordType: "Receitas", predicate: NSPredicate(value: true))
+        let database = container.publicCloudDatabase
+        database.perform(query, inZoneWith: nil) { (records, error) in
+            if let err = error {
+                fatalError(err.localizedDescription)
+            } else {
+                guard let records = records else { return }
+                let sortedRecords = records.sorted(by: { $0.creationDate! > $1.creationDate!})
+                self.recepie = sortedRecords
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
     
     // MARK: - Search Bar
@@ -146,7 +161,7 @@ class MenuTableViewController: UITableViewController {
 
     // MARK: - Construction table view
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filterRenevue.count
+        return recepie.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -155,7 +170,9 @@ class MenuTableViewController: UITableViewController {
             
             cell.imageRecipeCardMenu.image = UIImage(named: filterRenevue[indexPath.row].nomeDaImagemMenu)
             cell.imageRecipeCardMenu.layer.cornerRadius = 15
-            cell.labelNameRecipeCardMenu.text = filterRenevue[indexPath.row].nomeDaReceita
+            
+            cell.labelNameRecipeCardMenu.text = recepie[indexPath.row].value(forKey: "NomeDaReceita") as? String
+//            cell.labelNameRecipeCardMenu.text = filterRenevue[indexPath.row].nomeDaReceita
             cell.labelTimeRecipeCardMenu.text = filterRenevue[indexPath.row].tempoDePreparo
             cell.labelPeopleRecipeCardMenu.text = filterRenevue[indexPath.row].quantasPessoasServe
             return cell
