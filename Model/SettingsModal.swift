@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CloudKit
 
 class SettingsModal: NSObject {
     
@@ -28,13 +29,13 @@ class SettingsModal: NSObject {
     var tutorialCollectionViewDataSource = TutorialCollectionViewDataSource()
     var tutorialCollectionViewDelegate = TutorialCollectionViewDelegate()
     
-    init(recipe: Receita) {
+    init(recipe: CKRecord) {
         super .init()
         
         tutorialCollectionView.dataSource = tutorialCollectionViewDataSource
         tutorialCollectionView.delegate = tutorialCollectionViewDelegate
-        tutorialCollectionViewDataSource.text = recipe.dicas
-        tutorialCollectionViewDataSource.title = recipe.nomeDaDica
+        tutorialCollectionViewDataSource.text = recipe.value(forKey: "Dica") as? String
+        tutorialCollectionViewDataSource.title = recipe.value(forKey: "NomeDaDica") as? String
         tutorialCollectionView.register(TutorialCollectionViewCell.self, forCellWithReuseIdentifier: "cellId")
         
     }
