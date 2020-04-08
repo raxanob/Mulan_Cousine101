@@ -31,19 +31,15 @@ class MenuTableViewController: UITableViewController {
         queryDatabase()
         creatSearchBar()
         filterRenevue = recepie
+        setSegmentadControll()
 
-        SegmentedControlOutlet.selectedSegmentIndex = 0
-        SegmentedControlOutlet.backgroundColor = .clear
-        SegmentedControlOutlet.tintColor = .clear
-        SegmentedControlOutlet.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.init(name: "Avenir-Medium", size: 17) ?? UIFont.boldSystemFont(ofSize: 21),NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.8326148391, green: 0.3012730181, blue: 0.3521553278, alpha: 1)], for: .selected)
-        SegmentedControlOutlet.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.init(name: "Avenir-Medium", size: 16) ?? UIFont.boldSystemFont(ofSize: 21),NSAttributedString.Key.foregroundColor: UIColor.lightGray], for: .normal)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         navigationController?.navigationBar.barStyle = .default
     }
-     
-    func queryDatabase(){
+    
+    func queryDatabase() {
         
         database.perform(query, inZoneWith: nil) { (records, error) in
             guard let records = records else { return }
@@ -114,7 +110,7 @@ class MenuTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    // MARK: - Segmented controller action
+    // MARK: - Segmented Controller
     @IBAction func SegmentedControlAction(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
@@ -133,38 +129,43 @@ class MenuTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
+    func setSegmentadControll() {
+        SegmentedControlOutlet.selectedSegmentIndex = 0
+        SegmentedControlOutlet.backgroundColor = .clear
+        SegmentedControlOutlet.tintColor = .clear
+        SegmentedControlOutlet.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.init(name: "Avenir-Medium", size: 17) ?? UIFont.boldSystemFont(ofSize: 21),NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.8326148391, green: 0.3012730181, blue: 0.3521553278, alpha: 1)], for: .selected)
+        SegmentedControlOutlet.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.init(name: "Avenir-Medium", size: 16) ?? UIFont.boldSystemFont(ofSize: 21),NSAttributedString.Key.foregroundColor: UIColor.lightGray], for: .normal)
+    }
+    
     // MARK: - Functions of segmented
     func getRoastReceitas() -> [CKRecord] {
-        let all = recepie
         var roastReceitas: [CKRecord] = []
-        for receita in all where receita.value(forKey: "Categoria") as? String == "Assados" {
+        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Assados" {
             roastReceitas.append(receita)
         }
         return roastReceitas
     }
     
+    
     func getCookedReceitas() -> [CKRecord] {
-        let all = recepie
         var cookedReceitas: [CKRecord] = []
-        for receita in all where receita.value(forKey: "Categoria") as? String == "Cozidos" {
+        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Cozidos" {
             cookedReceitas.append(receita)
         }
         return cookedReceitas
     }
     
     func getFriedReceitas() -> [CKRecord] {
-        let all = recepie
         var friedReceitas: [CKRecord] = []
-        for receita in all where receita.value(forKey: "Categoria") as? String == "Fritos" {
+        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Fritos" {
             friedReceitas.append(receita)
         }
         return friedReceitas
     }
     
     func getDrinkReceitas() -> [CKRecord] {
-        let all = recepie
         var drinkReceitas: [CKRecord] = []
-        for receita in all where receita.value(forKey: "Categoria") as? String == "Bebidas" {
+        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Bebidas" {
             drinkReceitas.append(receita)
         }
         return drinkReceitas
@@ -180,15 +181,18 @@ class MenuTableViewController: UITableViewController {
             for receita in filterRenevue {
                 let url = (receita["ImagemMenu"] as! CKAsset).fileURL
                 if let data = try? Data(contentsOf: url!), let image = UIImage(data: data) {
-                cell.imageRecipeCardMenu.image = image
-                cell.imageRecipeCardMenu.layer.cornerRadius = 15
+                cell.imageRecipeCardMenu?.image = image
+                    
+                let name = filterRenevue[indexPath.row].value(forKey: "NomeDaReceita") as! String
+                cell.labelNameRecipeCardMenu?.text = name
                 
-                cell.labelNameRecipeCardMenu.text = filterRenevue[indexPath.row].value(forKey: "NomeDaReceita") as? String
+                let time = filterRenevue[indexPath.row].value(forKey: "TempoDePreparo") as! String
+                cell.labelTimeRecipeCardMenu?.text = time
 
-                cell.labelTimeRecipeCardMenu.text = filterRenevue[indexPath.row].value(forKey: "TempoDePreparo") as? String
-
-                cell.labelPeopleRecipeCardMenu.text = filterRenevue[indexPath.row].value(forKey: "QuantidadeDePessoasQueServe") as? String
-                }
+                let serves = filterRenevue[indexPath.row].value(forKey: "QuantidadeDePessoasQueServe") as! String
+                cell.labelPeopleRecipeCardMenu?.text = serves
+                    }
+                cell.imageRecipeCardMenu.layer.cornerRadius = 15
             }
             return cell
         }
@@ -201,7 +205,7 @@ class MenuTableViewController: UITableViewController {
         
         if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "RecipePage") as? RecepieViewController {
             
-//            viewController.renevue = recepie
+            viewController.revenue = recepie
             
             if let navigator = navigationController {
                 navigator.pushViewController(viewController, animated: true)

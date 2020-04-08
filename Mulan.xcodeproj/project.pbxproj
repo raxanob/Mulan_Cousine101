@@ -133,10 +133,8 @@
 		6FE9DA5D23CFB16000F6AA77 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				E037E2C723E1015300A21059 /* MenuTableViewController.swift */,
-				E0BCD2AB2436846F00E41B2C /* MenuTVCSearchDelegate.swift */,
-				6F03459B23CF730800B77371 /* RecepieViewController.swift */,
-				E0DF47692437F02B00D810A4 /* ExtensionsOfRecepieVC.swift */,
+				E0287406243E6317009CB4DD /* Menu */,
+				E0BBB306243E774600045816 /* Recepie */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -149,6 +147,24 @@
 				6F9EBD5E22FB4FE90089DCD7 /* ReceitasPortugues.json */,
 			);
 			path = Localizable;
+			sourceTree = "<group>";
+		};
+		E0287406243E6317009CB4DD /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				E037E2C723E1015300A21059 /* MenuTableViewController.swift */,
+				E0BCD2AB2436846F00E41B2C /* MenuTVCSearchDelegate.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		E0BBB306243E774600045816 /* Recepie */ = {
+			isa = PBXGroup;
+			children = (
+				6F03459B23CF730800B77371 /* RecepieViewController.swift */,
+				E0DF47692437F02B00D810A4 /* ExtensionsOfRecepieVC.swift */,
+			);
+			path = Recepie;
 			sourceTree = "<group>";
 		};
 		E0BCD2A82436836A00E41B2C /* TutorialCollectionView */ = {

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CloudKit
 
 enum CategoryOfRenevue: String {
     case cooked = "Cozidos"
