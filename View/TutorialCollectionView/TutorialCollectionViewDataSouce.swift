@@ -6,10 +6,11 @@
 //  Copyright © 2020 Nathalia Melare. All rights reserved.
 //
 import UIKit
+import CloudKit
 
 class TutorialCollectionViewDataSource: NSObject, UICollectionViewDataSource {
     
-    var tutorials : [Receita] = []
+    var tutorials = [CKRecord]()
     var text: String!
     var title: String!
     

@@ -8,18 +8,19 @@
 
 import Foundation
 import UIKit
+import CloudKit
 
 class RecepieViewController: UIViewController {
-    
+
     struct Ingredient {
         var name: String
         var image: UIImage
         var dose: String
     }
     
-    var renevue: Receita!
+    var revenue: CKRecord!
     var data: [Ingredient] = []
-    lazy var settingsModal = SettingsModal(recipe: renevue)
+    lazy var settingsModal = SettingsModal(recipe: revenue)
     
     @IBOutlet weak var testTutorialButton: UIButton!
     @IBOutlet weak var pratoImagem: UIImageView!
@@ -38,18 +39,21 @@ class RecepieViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        pratoImagem.image = UIImage(named:renevue.nomeDaImagemPaginaReceita)
-        titleOfRecepie.text = renevue.nomeDaReceita
-        serverOfRecepieLabel.text = renevue.quantasPessoasServe
-        timeOfRecepieLabel.text = renevue.tempoDePreparo
-        textMethodOfPreparation.text = renevue.modoDePreparo.joined(separator: "\n")
+        let url = (revenue["ImagemPaginaReceita"] as! CKAsset).fileURL
+        if let data = try? Data(contentsOf: url!), let image = UIImage(data: data) {
+        pratoImagem.image = image
+        }
+        titleOfRecepie.text = revenue.value(forKey: "NomeDaReceita") as? String
+        serverOfRecepieLabel.text = revenue.value(forKey: "QuantidadeDePessoasQueServe") as? String
+        timeOfRecepieLabel.text = revenue.value(forKey: "TempoDePreparo") as? String
+        textMethodOfPreparation.text = revenue.value(forKey: "ModoDePreparo") as? String
         textMethodOfPreparation.isEditable = false
         
         viewOfRecepie.layer.cornerRadius = 20
         view.addSubview(viewOfRecepie)
         
         testTutorialButton.layer.cornerRadius = 10
-        testTutorialButton.setTitle(renevue.nomeDaDica, for: .normal)
+        testTutorialButton.setTitle(revenue.value(forKey: "NomeDaDica") as? String, for: .normal)
         
         self.navigationController!.navigationBar.topItem?.title = "";
         self.navigationController!.navigationBar.shadowImage = UIImage()
@@ -66,6 +70,17 @@ class RecepieViewController: UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        let nomesIngredientes = revenue["NomeIngredientes"] as! [String]
+        let quantidadesIngredientes = revenue["QuantidadeIngredientes"] as! [String]
+        let imagensIngredientes = revenue["ImagensIngredientes"] as! [CKAsset]
+        
+        for i in 0...nomesIngredientes.count {
+            let url = (imagensIngredientes[i]).fileURL
+            if let ndata = try? Data(contentsOf: url!), let image = UIImage(data: ndata) {
+            data.append(Ingredient.init(name: nomesIngredientes[i], image: image, dose: quantidadesIngredientes[i]))
+            }
+        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -90,28 +105,4 @@ class RecepieViewController: UIViewController {
         cv.register(IngredientsCollectionViewCell.self, forCellWithReuseIdentifier: "cellRecepie")
         return cv
     }()
-}
-
-extension RecepieViewController: UICollectionViewDelegateFlowLayout  {
-    
-}
-
-extension RecepieViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 70, height: 130)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return renevue.ingredientes.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellRecepie", for: indexPath) as! IngredientsCollectionViewCell
-        //Configure cell with photo from parent ViewController
-        for i in 0...renevue.ingredientes.count - 1 {
-            data.append(RecepieViewController.Ingredient.init(name: renevue.ingredientes[i], image: UIImage(named: renevue.imagensDosIngredientes[i])!, dose: renevue.quantidade[i]))
-        }
-        cell.data = self.data[indexPath.row]
-        return cell
-    }
 }
