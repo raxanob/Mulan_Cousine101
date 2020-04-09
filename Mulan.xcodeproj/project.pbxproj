@@ -20,9 +20,6 @@
 		6F98235123D183FF0081C484 /* TutorialCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F98235023D183FF0081C484 /* TutorialCollectionViewCell.swift */; };
 		6F98235323D184F60081C484 /* TutorialCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F98235223D184F60081C484 /* TutorialCollectionViewDelegate.swift */; };
 		6F9EBD5A22FB4B160089DCD7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6F9EBD5C22FB4B160089DCD7 /* Localizable.strings */; };
-		6F9EBD5F22FB4FE90089DCD7 /* ReceitasPortugues.json in Resources */ = {isa = PBXBuildFile; fileRef = 6F9EBD5E22FB4FE90089DCD7 /* ReceitasPortugues.json */; };
-		6FE7B417228A1C1000422A92 /* ReceitasIngles.json in Resources */ = {isa = PBXBuildFile; fileRef = 6FE7B416228A1C1000422A92 /* ReceitasIngles.json */; };
-		6FE7B42C228DF22100422A92 /* Receita.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE7B42B228DF22100422A92 /* Receita.swift */; };
 		E037E2C823E1015300A21059 /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E037E2C723E1015300A21059 /* MenuTableViewController.swift */; };
 		E037E2CA23E101A500A21059 /* IngredientsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E037E2C923E101A500A21059 /* IngredientsCollectionViewCell.swift */; };
 		E0BCD2AA243683E900E41B2C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BCD2A9243683E900E41B2C /* Helpers.swift */; };
@@ -50,9 +47,6 @@
 		6F9EBD5622FB484B0089DCD7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		6F9EBD5B22FB4B160089DCD7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6F9EBD5D22FB4B180089DCD7 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		6F9EBD5E22FB4FE90089DCD7 /* ReceitasPortugues.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ReceitasPortugues.json; sourceTree = "<group>"; };
-		6FE7B416228A1C1000422A92 /* ReceitasIngles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ReceitasIngles.json; sourceTree = "<group>"; };
-		6FE7B42B228DF22100422A92 /* Receita.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Receita.swift; sourceTree = "<group>"; };
 		E037E2C723E1015300A21059 /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		E037E2C923E101A500A21059 /* IngredientsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientsCollectionViewCell.swift; sourceTree = "<group>"; };
 		E0BCD2A9243683E900E41B2C /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -112,7 +106,6 @@
 			children = (
 				E0BCD2A9243683E900E41B2C /* Helpers.swift */,
 				6F806ABE23DF426500A48180 /* Extension.swift */,
-				6FE7B42B228DF22100422A92 /* Receita.swift */,
 				6F5DCCF623D01FF300651716 /* SettingsModal.swift */,
 			);
 			path = Model;
@@ -143,8 +136,6 @@
 			isa = PBXGroup;
 			children = (
 				6F9EBD5C22FB4B160089DCD7 /* Localizable.strings */,
-				6FE7B416228A1C1000422A92 /* ReceitasIngles.json */,
-				6F9EBD5E22FB4FE90089DCD7 /* ReceitasPortugues.json */,
 			);
 			path = Localizable;
 			sourceTree = "<group>";
@@ -247,8 +238,6 @@
 				6F9EBD5A22FB4B160089DCD7 /* Localizable.strings in Resources */,
 				6F673F252282034E00506FD9 /* LaunchScreen.storyboard in Resources */,
 				6F673F222282034E00506FD9 /* Assets.xcassets in Resources */,
-				6F9EBD5F22FB4FE90089DCD7 /* ReceitasPortugues.json in Resources */,
-				6FE7B417228A1C1000422A92 /* ReceitasIngles.json in Resources */,
 				6F673F1D2282034D00506FD9 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -262,7 +251,6 @@
 			files = (
 				E0BCD2AC2436846F00E41B2C /* MenuTVCSearchDelegate.swift in Sources */,
 				E0BCD2AA243683E900E41B2C /* Helpers.swift in Sources */,
-				6FE7B42C228DF22100422A92 /* Receita.swift in Sources */,
 				6F03459C23CF730800B77371 /* RecepieViewController.swift in Sources */,
 				6F806ABF23DF426500A48180 /* Extension.swift in Sources */,
 				E037E2CA23E101A500A21059 /* IngredientsCollectionViewCell.swift in Sources */,
