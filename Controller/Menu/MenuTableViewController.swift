@@ -116,13 +116,13 @@ class MenuTableViewController: UITableViewController {
         case 0:
             filterRenevue = recepie
         case 1:
-            filterRenevue = getRoastReceitas()
+            filterRenevue = getFoods(category: "Assados")
         case 2:
-            filterRenevue = getCookedReceitas()
+            filterRenevue = getFoods(category: "Cozidos")
         case 3:
-            filterRenevue = getFriedReceitas()
+            filterRenevue = getFoods(category: "Fritos")
         case 4:
-            filterRenevue = getDrinkReceitas()
+            filterRenevue = getFoods(category: "Bebidas")
         default:
             break
         }
@@ -137,38 +137,13 @@ class MenuTableViewController: UITableViewController {
         SegmentedControlOutlet.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.init(name: "Avenir-Medium", size: 16) ?? UIFont.boldSystemFont(ofSize: 21),NSAttributedString.Key.foregroundColor: UIColor.lightGray], for: .normal)
     }
     
-    // MARK: - Functions of segmented
-    func getRoastReceitas() -> [CKRecord] {
-        var roastReceitas: [CKRecord] = []
-        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Assados" {
-            roastReceitas.append(receita)
+    // MARK: - Function of segmented
+    func getFoods(category: String) -> [CKRecord] {
+        var foods: [CKRecord] = []
+        for receita in recepie where receita.value(forKey: "Categoria") as? String == category {
+            foods.append(receita)
         }
-        return roastReceitas
-    }
-    
-    
-    func getCookedReceitas() -> [CKRecord] {
-        var cookedReceitas: [CKRecord] = []
-        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Cozidos" {
-            cookedReceitas.append(receita)
-        }
-        return cookedReceitas
-    }
-    
-    func getFriedReceitas() -> [CKRecord] {
-        var friedReceitas: [CKRecord] = []
-        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Fritos" {
-            friedReceitas.append(receita)
-        }
-        return friedReceitas
-    }
-    
-    func getDrinkReceitas() -> [CKRecord] {
-        var drinkReceitas: [CKRecord] = []
-        for receita in recepie where receita.value(forKey: "Categoria") as? String == "Bebidas" {
-            drinkReceitas.append(receita)
-        }
-        return drinkReceitas
+        return foods
     }
 
     // MARK: - Construction table view
@@ -181,7 +156,7 @@ class MenuTableViewController: UITableViewController {
             for receita in filterRenevue {
                 let url = (receita["ImagemMenu"] as! CKAsset).fileURL
                 if let data = try? Data(contentsOf: url!), let image = UIImage(data: data) {
-                cell.imageRecipeCardMenu?.image = image
+                    cell.imageRecipeCardMenu?.image = image
                     
                 let name = filterRenevue[indexPath.row].value(forKey: "NomeDaReceita") as! String
                 cell.labelNameRecipeCardMenu?.text = name
