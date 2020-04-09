@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import CloudKit
 
 class IngredientsCollectionViewCell: UICollectionViewCell {
     
-    var renevue: Receita!
+    var renevue: CKRecord!
     
     var data: RecepieViewController.Ingredient? {
         didSet {
